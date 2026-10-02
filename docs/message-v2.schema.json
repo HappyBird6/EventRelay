@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EventRelay external message v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "eventId", "sourceType", "appName", "occurredAt"],
+  "anyOf": [{"required": ["body"]}, {"required": ["messages"]}],
+  "properties": {
+    "schema": {"const": "eventrelay.message.v2"},
+    "eventId": {"type": "string", "minLength": 1},
+    "sourceType": {"enum": ["SMS", "NOTIFICATION"]},
+    "appName": {"type": "string", "minLength": 1},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "sender": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "body": {"type": "string"},
+    "messages": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["text"],
+        "properties": {
+          "text": {"type": "string"},
+          "sender": {"type": "string", "minLength": 1},
+          "occurredAt": {"type": "string", "format": "date-time"},
+          "historical": {"const": true}
+        }
+      }
+    },
+    "additionalText": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["label", "text"],
+        "properties": {
+          "label": {"enum": ["originalBody", "expandedText", "notificationText", "lines", "expandedTitle", "subtitle", "summary", "info", "conversation"]},
+          "text": {"type": "string"}
+        }
+      }
+    }
+  }
+}
